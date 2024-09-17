@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">AlarmaDeRobo</string>
     <string name="title_activity_main">AlarmaDeRobo</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="package_name">alarma.de.robo</string>
+    <string name="custom_url_scheme">alarma.de.robo</string>
 </resources>

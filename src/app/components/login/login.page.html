@@ -1,9 +1,29 @@
-<ion-content [fullscreen]="true">
-<main class="form-signin w-100 m-auto">
+<!-- <div class="login body">
+	<h1>Login</h1>
+    <form method="post">
+    	<input type="text" name="u" placeholder="Username" required="required" />
+        <input type="password" name="p" placeholder="Password" required="required" />
+        <button type="submit" class="btn btn-primary btn-block btn-large">Let me in.</button>
+    </form>
+</div> -->
+
+
+
+
+
+
+
+<ion-content [fullscreen]="true" class="body">
+<main class=" login">
   <div class="container-fluid d-flex justify-content-center align-items-center full-width">
 
     <form [formGroup]="loginForm" (ngSubmit)="login()" class="needs-validation" novalidate>
       <header></header>
+
+      
+    <div class="col-lg-12 login-key container-fluid d-flex justify-content-center align-items-center full-width">
+      <i class="fa fa-key" aria-hidden="true"></i>
+    </div>
 
       <h3 class="texto h3 mb-3 fw-normal m-auto">Ingresar credenciales</h3>
 
@@ -14,7 +34,7 @@
       }
 
       <div class="form-floating">
-        <input formControlName="mail" name="mail" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" value="{{mail}}" (keyup.enter)="login()">
+        <input formControlName="mail" name="mail" type="email" class="form-control" id="floatingInput" placeholder="" value="{{mail}}" (keyup.enter)="login()">
         @if(loginForm.get('mail'); as aux) {
           @if(aux.invalid && (aux.dirty || aux.touched)){
               <div class="alert alert-danger">
@@ -25,7 +45,7 @@
         <label for="floatingInput">Correo</label>
       </div>
       <div class="form-floating">
-        <input formControlName="pass" name="pass" type="password" class="form-control" id="floatingPassword" placeholder="Password" value="{{pass}}" (keyup.enter)="login()">
+        <input formControlName="pass" name="pass" type="password" class="form-control" id="floatingPassword" placeholder="" value="{{pass}}" (keyup.enter)="login()">
         @if(loginForm.get('pass'); as aux) {
           @if(aux.invalid && (aux.dirty || aux.touched)){
               <div class="alert alert-danger">
@@ -41,7 +61,7 @@
     </form>
   </div>
 
-  <!-- DIV CENTRADO !!! -->
+ 
   <div class="container-fluid d-flex justify-content-center align-items-center full-width">
     <ion-button (click)="buttonDemoUno()">Admin</ion-button>
     <ion-button (click)="buttonDemoDos()">Tester</ion-button>

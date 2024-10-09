@@ -32,11 +32,13 @@
               }
             ],
             "styles": [
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "@angular/material/prebuilt-themes/magenta-violet.css",
               "src/global.scss",
               "src/theme/variables.scss"
             ],
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {
@@ -111,11 +113,13 @@
               }
             ],
             "styles": [
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "@angular/material/prebuilt-themes/magenta-violet.css",
               "src/global.scss",
               "src/theme/variables.scss"
             ],
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "ci": {

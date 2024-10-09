@@ -1,29 +1,48 @@
-@import '../components/login/login.page.scss';
+@import './../components/login/login.page.scss';
 
-#container {
+.big-round-button {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 5px solid #18d0c3;
+  --border-radius: 50%;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-border-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
+}
 
+.center-container {
   position: absolute;
-  left: 0;
-  right: 0;
   top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.exit-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(#400b63, 0.5); ;
+  color: white;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+.button-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-#container a {
-  text-decoration: none;
+span {
+  font-size: medium;
+  color: #0DB8DE;
+}
+
+.icon {
+  font-size: larger;
 }

@@ -28,7 +28,7 @@ export class LoginPage implements OnInit {
   constructor() {
     const minLength = Validators.minLength(6);
     const required = Validators.required;
-    const correo = Validators.pattern('^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    const correo = Validators.pattern('^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'); 
 
     this.loginForm = this.fb.group({
       mail: [this.mail, [required, minLength, correo]],

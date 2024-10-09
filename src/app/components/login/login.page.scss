@@ -36,6 +36,12 @@ html { width: 100%; height:100%; overflow:hidden; }
 	height:300px;
 }
 
+.icon{
+  color: #fff;
+  height: 80px;
+  margin-bottom: 5vh;
+}
+
 .login h1 { color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.3); letter-spacing:1px; text-align:center; }
 
 .login-key {
@@ -44,6 +50,7 @@ html { width: 100%; height:100%; overflow:hidden; }
   font-size: 80px;
   line-height: 100px;
   background: -webkit-linear-gradient(#27EF9F, #0DB8DE);
+  background-clip: -webkit-linear-gradient(#27EF9F, #0DB8DE);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -68,128 +75,3 @@ input {
 	transition: box-shadow .5s ease;
 }
 input:focus { box-shadow: inset 0 -5px 45px rgba(100,100,100,0.4), 0 1px 1px rgba(255,255,255,0.2); }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .full-height {
-  height: 100vh; 
-}
-
-.form-signin {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-.full-width {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-
-
-ion-content {
-  --background: #F4A5A5 ; 
-  font-family: 'Roboto', sans-serif;
-}
-
-.texto {
-  color: #7D1F1F;
-}
-
-ion-button {
-  --background: #E07575;
-  --color: #FFFFFF;
-}
-
-.primary {
-  --background: #F4A5A5;
-  --ion-color-primary: #F4A5A5;
-  --ion-color-primary-contrast: #7D1F1F;
-}
-
-.secondary {
-  --background: #E07575;
-  --ion-color-secondary: #E07575;
-  --ion-color-secondary-contrast: #FFFFFF;
-}
-
-.form-signin {
-    max-width: 330px;
-    padding: 1rem;
-  }
-  
-  .form-signin .form-floating:focus-within {
-    z-index: 2;
-  }
-  
-  .form-signin input[type="email"] {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-  
-  .form-signin input[type="password"] {
-    margin-bottom: -1px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-  
-  .fab-container {
-    position: fixed;
-    bottom: 100px;
-    right: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .fab-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 8px;
-    transition: transform 0.3s, opacity 0.3s;
-    transform: scale(0);
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  .fab-buttons.open {
-    transform: scale(1);
-    opacity: 1;
-    pointer-events: auto;
-  }
-  
-  .fab-sub-button {
-    margin-bottom: 8px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .fab-sub-button img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  } */

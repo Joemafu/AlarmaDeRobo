@@ -14,6 +14,13 @@ import { firebaseConfig } from './environments/environment.prod';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
+import { enableProdMode } from '@angular/core';
+import { environment } from './environments/environment';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { DeviceMotion } from '@ionic-native/device-motion/ngx';
+import { Flashlight } from '@ionic-native/flashlight/ngx';
+import { Vibration } from '@ionic-native/vibration/ngx';
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -24,7 +31,13 @@ bootstrapApplication(AppComponent, {
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage()), provideAnimationsAsync(), provideAnimationsAsync()
+    provideStorage(() => getStorage()), 
+    provideAnimationsAsync(), 
+    provideAnimationsAsync(),
+    ScreenOrientation,
+    DeviceMotion,
+    Flashlight,
+    Vibration
   ],
 })
   .catch((err) => console.error(err));

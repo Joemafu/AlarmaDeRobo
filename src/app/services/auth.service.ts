@@ -16,12 +16,13 @@ export class AuthService {
   public user$ = user(this.firebaseAuth);
   public currentUserSig = signal<Usuario | null | undefined>(undefined);
   public currentUser: string = '';
+  public currentPass: string = '';
 
   public http: HttpClient = inject(HttpClient);
 
   public userService: UserService = inject(UserService);
 
-  private logService: LogService = inject(LogService);
+  //private logService: LogService = inject(LogService);
 
   constructor() {}
   
@@ -31,10 +32,12 @@ export class AuthService {
         .then(async (userCredential) => {
 
           const user = userCredential.user;
+          const pass = password;
           this.router.navigate(['/home']);
           resolve('');
           if (user.email) {
             this.currentUser = user.email;
+            this.currentPass = pass;
           }
           //await this.logService.logUserLogin(user.email!);
 

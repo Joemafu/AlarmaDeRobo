@@ -17,7 +17,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { enableProdMode } from '@angular/core';
 import { environment } from './environments/environment';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
-import { DeviceMotion } from '@ionic-native/device-motion/ngx';
 import { Flashlight } from '@ionic-native/flashlight/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
 
@@ -35,7 +34,6 @@ bootstrapApplication(AppComponent, {
     provideAnimationsAsync(), 
     provideAnimationsAsync(),
     ScreenOrientation,
-    DeviceMotion,
     Flashlight,
     Vibration
   ],

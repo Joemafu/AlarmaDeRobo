@@ -1,69 +1,54 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonButtons,
-  IonIcon,
-  IonNavLink,
-  IonAlert,
-} from '@ionic/angular/standalone';
+import { IonButton, IonButtons } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import {
-  DeviceMotion,
-  DeviceMotionAccelerationData,
-} from '@ionic-native/device-motion/ngx';
-import { Flashlight } from '@ionic-native/flashlight/ngx';
+//import { Flashlight } from '@ionic-native/flashlight/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
+
+import { Motion } from '@capacitor/motion';
+import { Haptics } from '@capacitor/haptics';
+//import { Flashlight } from '@capacitor/flashlight';
+import { CapacitorFlash } from '@capgo/capacitor-flash';
+import { Flashlight } from '@ionic-native/flashlight/ngx';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [
-    IonAlert,
-    IonNavLink,
-    IonIcon,
-    IonButtons,
-    IonButton,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    CommonModule,
-    FormsModule,
-  ],
+  imports: [ IonButtons, IonButton, CommonModule, FormsModule ]
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
 
   auth = inject(AuthService);
   authService = inject(AuthService);
   router = inject(Router);
-  deviceMotion = inject(DeviceMotion);
-  flashlight = inject(Flashlight);
+  //flashlight = inject();
   vibration = inject(Vibration);
 
-  audioIzquierda = './../../assets/sound/s1.opus';
-  audioDerecha = './../../assets/sound/s2.opus';
-  audioVertical = './../../assets/sound/s3.opus';
-  audioHorizontal = './../../assets/sound/s4.opus';
+  audioIzquierda = './../../assets/sound/s1.ogg';
+  audioDerecha = './../../assets/sound/s2.ogg';
+  audioVertical = './../../assets/sound/s3.ogg';
+  audioHorizontal = './../../assets/sound/s4.ogg';
+  audioPassword = './../../assets/sound/s5.ogg';
 
-  posicionActualCelular = 'plano';
+  posicionActualCelular = 'acostado';
   accionActivo: boolean = false;
-  accelerationX: any;
-  accelerationY: any;
-  accelerationZ: any;
+  x: any = 0;
+  y: any = 0;
+  z: any = 0;
   public estaBloqueado: boolean = false;
 
   public subscription: Subscription = new Subscription();
+  error: string = 'ok';
+  options = {
+    intensity: 100,
+  }
 
   constructor() {}
 
@@ -93,15 +78,141 @@ export class HomePage implements OnInit {
     this.authService.logout();
     this.router.navigateByUrl('/login');
   }
-  //Init - Destroy
-  ngOnInit() {}
+
+  ngOnInit() {
+    this.startListeningToMotion();
+    this.turnOnLight(5000);
+    CapacitorFlash.switchOn(this.options);
+  }
+
   ngOnDestroy() {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+    Motion.removeAllListeners();
   }
-  //Main
-  playSound(soundFile: string) {
+
+  startListeningToMotion() {
+    Motion.addListener('accel', (event) => {
+      const { x, y, z } = event.acceleration;
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      if (this.estaBloqueado) {
+        this.handleMotionDetection(this.x, this.y, this.z);
+      }
+    });
+  }
+
+  //Calibrado por gpt  v2
+  handleMotionDetection(x: number, y: number, z: number) {
+    // Detectar movimiento a la izquierda
+    if (
+      x > 5 &&
+      x < 10 &&
+      this.posicionActualCelular !== 'Izquierda' &&
+      this.accionActivo === false
+    ) {
+      this.izquierda();
+    } 
+    // Detectar movimiento a la derecha
+    else if (
+      x < -5 &&
+      x > -10 &&
+      this.posicionActualCelular !== 'Derecha' &&
+      this.accionActivo === false
+    ) {
+      this.derecha();
+    } 
+    // Detectar si el dispositivo está en posición vertical
+    else if (
+      (y >= 9 || y <= -10) &&
+      this.posicionActualCelular !== 'Vertical' &&
+      this.accionActivo === false
+    ) {
+      this.vertical();
+    } 
+    // Detectar si se coloca el dispositivo en posición horizontal
+    else if (
+      z >= 9 && // Sensor Z indica que el dispositivo está en posición horizontal
+      this.posicionActualCelular === 'Vertical' // Asegúrate de que el dispositivo estaba en vertical antes de cambiar a horizontal
+    ) {
+      this.horizontal();
+    }
+  }
+
+  //calibrado por gpt
+  /* handleMotionDetection(x: number, y: number, z: number) {
+    if (
+      x < -5 && // Movimiento hacia la izquierda
+      x > -10 &&
+      this.posicionActualCelular != 'Izquierda' &&
+      this.accionActivo == false
+    ) {
+      this.izquierda();
+    } else if (
+      x > 5 && // Movimiento hacia la derecha
+      x < 10 &&
+      this.posicionActualCelular != 'Derecha' &&
+      this.accionActivo == false
+    ) {
+      this.derecha();
+    } else if (
+      (y >= 9 || y <= -10) && // Levantamiento vertical
+      this.posicionActualCelular != 'Vertical' &&
+      this.accionActivo == false
+    ) {
+      this.vertical();
+    } else if (
+      z >= 9 && // Levantamiento horizontal
+      x >= -1 &&
+      x <= 1 &&
+      y >= -1 &&
+      y <= 1 &&
+      this.posicionActualCelular != 'Horizontal' &&
+      this.posicionActualCelular != 'plano' &&
+      this.accionActivo == false
+    ) {
+      this.horizontal();
+    }
+  } */
+
+  /* handleMotionDetection(x: number, y: number, z: number) {
+    if (
+      x > 5 &&
+      x < 10 &&
+      this.posicionActualCelular != 'Izquierda' &&
+      this.accionActivo == false
+    ) {
+      this.izquierda();
+    } else if (
+      x < -5 &&
+      x > -10 &&
+      this.posicionActualCelular != 'Derecha' &&
+      this.accionActivo == false
+    ) {
+      this.derecha();
+    } else if (
+      (y >= 9 || y <= -10) &&
+      this.posicionActualCelular != 'Vertical' &&
+      this.accionActivo == false
+    ) {
+      this.vertical();
+    } else if (
+      z >= 9 &&
+      y >= -1 &&
+      y <= 1 &&
+      x <= 1 &&
+      x >= -1 &&
+      this.posicionActualCelular != 'Horizontal' &&
+      this.posicionActualCelular != 'plano' &&
+      this.accionActivo == false
+    ) {
+      this.horizontal();
+    }
+  } */
+
+  async playSound(soundFile: string) {
     const audio = new Audio(`assets/sounds/${soundFile}`);
     audio.play();
     audio.onended = () => {
@@ -109,100 +220,52 @@ export class HomePage implements OnInit {
     };
   }
 
-
-  
-  turnOnLight(miliSecond: number) {
-    this.flashlight.switchOn();
+  async turnOnLight(miliSecond: number) {
+    await CapacitorFlash.switchOn(this.options);
     setTimeout(() => {
-      this.flashlight.switchOff();
+      CapacitorFlash.switchOff();
     }, miliSecond);
   }
-  vibrate(miliSecond: number) {
-    this.vibration.vibrate(miliSecond);
+
+  async vibrate(miliSecond: number) {
+    Haptics.vibrate({ duration: miliSecond });
   }
+
   cambiarBloqueado() {
-    if (this.estaBloqueado) {
-      this.estaBloqueado = false;
-      this.stopMotionHandle();
-    } else {
-      this.estaBloqueado = true;
-      this.startMotionHandle();
-    }
+    this.estaBloqueado = !this.estaBloqueado;
   }
-  startMotionHandle() {
-    this.subscription = this.deviceMotion
-      .watchAcceleration({ frequency: 300 })
-      .subscribe((acceleration: DeviceMotionAccelerationData) => {
-        console.log(acceleration);
-        this.accelerationX = Math.floor(acceleration.x);
-        this.accelerationY = Math.floor(acceleration.y);
-        this.accelerationZ = Math.floor(acceleration.z);
-        if (
-          acceleration.x > 5 &&
-          acceleration.x < 10 &&
-          this.posicionActualCelular != 'Izquierda' &&
-          this.accionActivo == false
-        ) {
-          this.izquierda();
-        } else if (
-          acceleration.x < -5 &&
-          acceleration.x > -10 &&
-          this.posicionActualCelular != 'Derecha' &&
-          this.accionActivo == false
-        ) {
-          this.derecha();
-        } else if (
-          (acceleration.y >= 9 || acceleration.y <= -10) &&
-          this.posicionActualCelular != 'Vertical' &&
-          this.accionActivo == false
-        ) {
-          this.vertical();
-        } else if (
-          acceleration.z >= 9 &&
-          acceleration.y >= -1 &&
-          acceleration.y <= 1 &&
-          acceleration.x <= 1 &&
-          acceleration.x >= -1 &&
-          this.posicionActualCelular != 'Horizontal' &&
-          this.posicionActualCelular != 'plano' &&
-          this.accionActivo == false
-        ) {
-          this.horizontal();
-        }
-      });
-  }
-  // (acceleration.z >= 9 && (acceleration.y >= -1 && acceleration.y <= 1) && (acceleration.x >= -1 && acceleration.x <= 1))
-  stopMotionHandle() {
-    this.subscription.unsubscribe();
-  }
+
   izquierda() {
     this.accionActivo = true;
     this.posicionActualCelular = 'Izquierda';
     this.vibrate(2000);
     this.playSound(this.audioIzquierda);
-
   }
+
   derecha() {
     this.accionActivo = true;
     this.posicionActualCelular = 'Derecha';
     this.vibrate(2000);
     this.playSound(this.audioDerecha);
   }
+
   vertical() {
     this.accionActivo = true;
     this.posicionActualCelular = 'Vertical';
     this.turnOnLight(5000);
     this.playSound(this.audioVertical);
   }
+
   horizontal() {
     this.accionActivo = true;
     this.posicionActualCelular = 'Horizontal';
     this.vibrate(5000);
     this.playSound(this.audioHorizontal);
   }
+
   incorrecto() {
     this.vibrate(5000);
     this.turnOnLight(5000);
-    this.playSound(this.audioHorizontal);
+    this.playSound(this.audioPassword);
   }
 }

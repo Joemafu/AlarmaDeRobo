@@ -4,17 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { IonButton, IonButtons } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-//import { Flashlight } from '@ionic-native/flashlight/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 
 import { Motion } from '@capacitor/motion';
 import { Haptics } from '@capacitor/haptics';
-//import { Flashlight } from '@capacitor/flashlight';
 import { CapacitorFlash } from '@capgo/capacitor-flash';
-import { Flashlight } from '@ionic-native/flashlight/ngx';
-import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +24,6 @@ export class HomePage implements OnInit, OnDestroy {
   auth = inject(AuthService);
   authService = inject(AuthService);
   router = inject(Router);
-  //flashlight = inject();
   vibration = inject(Vibration);
 
   audioIzquierda = './../../assets/sound/s1.ogg';
@@ -43,6 +38,7 @@ export class HomePage implements OnInit, OnDestroy {
   y: any = 0;
   z: any = 0;
   public estaBloqueado: boolean = false;
+  //contador=0;
 
   public subscription: Subscription = new Subscription();
   error: string = 'ok';
@@ -53,24 +49,27 @@ export class HomePage implements OnInit, OnDestroy {
   constructor() {}
 
   async formAlert() {
-    const { value: password } = await Swal.fire({
-      title: 'Ingrese su contraseña',
-      input: 'password',
-      heightAuto: false,
-      inputAttributes: {
-        autocapitalize: 'off',
-      },
-      confirmButtonText: 'DESACTIVAR',
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-    });
-    if (password == this.authService.currentPass) 
+    if(this.estaBloqueado)
     {
-      this.cambiarBloqueado();
-    }
-    else
-    {
-      this.incorrecto();
+      const { value: password } = await Swal.fire({
+        title: 'Ingrese su contraseña',
+        input: 'password',
+        heightAuto: false,
+        inputAttributes: {
+          autocapitalize: 'off',
+        },
+        confirmButtonText: 'DESACTIVAR',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      });
+      if (password == this.authService.currentPass) 
+      {
+        this.cambiarBloqueado();
+      }
+      else
+      {
+        this.incorrecto();
+      }
     }
   }
 
@@ -80,9 +79,6 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.startListeningToMotion();
-    this.turnOnLight(5000);
-    CapacitorFlash.switchOn(this.options);
   }
 
   ngOnDestroy() {
@@ -98,20 +94,63 @@ export class HomePage implements OnInit, OnDestroy {
       this.x = x;
       this.y = y;
       this.z = z;
-      if (this.estaBloqueado) {
-        this.handleMotionDetection(this.x, this.y, this.z);
-      }
+      this.handleMotionDetection(this.x, this.y, this.z);
     });
   }
 
-  //Calibrado por gpt  v2
+  cambiarBloqueado() {
+
+    this.estaBloqueado = !this.estaBloqueado;
+    if (this.estaBloqueado) {
+      this.startListeningToMotion();
+      //this.contador=0;
+    } else {
+      Motion.removeAllListeners();
+    }
+  }
+
+    //calibrado por Mi
+/*     handleMotionDetection(x: number, y: number, z: number) {
+      if (
+        this.contador==0 &&
+      x > 5 &&
+        this.accionActivo == false
+      ) {
+        this.izquierda();
+        this.contador++;
+      } else if (
+        this.contador==1 &&
+      x < -5 &&
+        this.accionActivo == false
+      ) {
+        this.derecha();
+        this.contador++;
+      } else if (
+        this.contador==2 &&
+        this.accionActivo == false
+      ) {
+        y >= 7 || y <= -7;
+        this.vertical();
+        this.contador++;
+      } else if (
+        z >= 7 &&
+        this.contador==3 &&
+        this.accionActivo == false
+      ) {
+        this.horizontal();
+        this.contador++;
+      }
+    } */
+
+/*   //Calibrado por gpt  v2
   handleMotionDetection(x: number, y: number, z: number) {
     // Detectar movimiento a la izquierda
     if (
       x > 5 &&
       x < 10 &&
       this.posicionActualCelular !== 'Izquierda' &&
-      this.accionActivo === false
+      this.accionActivo === false &&
+      this.posicionActualCelular !== 'vertical'
     ) {
       this.izquierda();
     } 
@@ -120,7 +159,8 @@ export class HomePage implements OnInit, OnDestroy {
       x < -5 &&
       x > -10 &&
       this.posicionActualCelular !== 'Derecha' &&
-      this.accionActivo === false
+      this.accionActivo === false &&
+      this.posicionActualCelular !== 'vertical'
     ) {
       this.derecha();
     } 
@@ -139,7 +179,7 @@ export class HomePage implements OnInit, OnDestroy {
     ) {
       this.horizontal();
     }
-  }
+  } */
 
   //calibrado por gpt
   /* handleMotionDetection(x: number, y: number, z: number) {
@@ -177,7 +217,7 @@ export class HomePage implements OnInit, OnDestroy {
     }
   } */
 
-  /* handleMotionDetection(x: number, y: number, z: number) {
+  handleMotionDetection(x: number, y: number, z: number) {
     if (
       x > 5 &&
       x < 10 &&
@@ -210,7 +250,7 @@ export class HomePage implements OnInit, OnDestroy {
     ) {
       this.horizontal();
     }
-  } */
+  }
 
   async playSound(soundFile: string) {
     const audio = new Audio(`assets/sounds/${soundFile}`);
@@ -231,9 +271,7 @@ export class HomePage implements OnInit, OnDestroy {
     Haptics.vibrate({ duration: miliSecond });
   }
 
-  cambiarBloqueado() {
-    this.estaBloqueado = !this.estaBloqueado;
-  }
+
 
   izquierda() {
     this.accionActivo = true;
@@ -264,6 +302,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   incorrecto() {
+    this.accionActivo = true;
     this.vibrate(5000);
     this.turnOnLight(5000);
     this.playSound(this.audioPassword);

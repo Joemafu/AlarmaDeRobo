@@ -3,8 +3,6 @@ import { Auth, signInWithEmailAndPassword, signOut, user } from '@angular/fire/a
 import { Router } from '@angular/router';
 import { Usuario } from '../interfaces/usuario';
 import { HttpClient } from '@angular/common/http';
-import { UserService } from './user.service';
-import { LogService } from './log.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +17,6 @@ export class AuthService {
   public currentPass: string = '';
 
   public http: HttpClient = inject(HttpClient);
-
-  public userService: UserService = inject(UserService);
-
-  //private logService: LogService = inject(LogService);
 
   constructor() {}
   
@@ -39,7 +33,6 @@ export class AuthService {
             this.currentUser = user.email;
             this.currentPass = pass;
           }
-          //await this.logService.logUserLogin(user.email!);
 
         })
         .catch(err => {
